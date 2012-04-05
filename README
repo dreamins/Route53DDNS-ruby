@@ -1,0 +1,20 @@
+Ruby script to use Route53 as dynamic DNS provider.
+
+= Requirements =
+* Installed ruby 1.9.x
+* curb, json and route53 gems
+
+= Usage =
+
+Create file with AWS secrets
+ex:
+{
+    "access_key" : "your access key",
+    "secret_key" : "your secret key"
+}
+
+launch with cron
+crontab -e
+*/5 * * * * /usr/bin/env /path_to/route53_ddns.rb --secrets-file /path_to/.your_aws_secrets --hosted-zone [your hosted zone] --random-sleep > /path_to_log/route53.log 2>&1
+
+More here: http://stepanyakovlev.net/2012/03/26/route53-dynamic-dns/
