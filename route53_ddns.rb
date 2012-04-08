@@ -99,15 +99,18 @@ end
 def get_my_ip
     ip_providers = [ { 
                     'url' => 'http://whatismyip.org/',
-                    'method'  =>  lambda { |x| x }
+                    'method'  =>  lambda { |x| x },
+                    'validate' => lambda { |x| x =~ /^([\d]{1,3}\.){3}[\d]{1,3}$/ }
                  },
                  {
                     'url' => 'http://strewth.org/ip.php',
-                    'method' => lambda { |x| JSON.parse(x)['ipaddress']; }
+                    'method' => lambda { |x| JSON.parse(x)['ipaddress']; },
+                    'validate' => lambda { |x| JSON.parse(x).has_key?('ipaddress') }
                  },
                  {
                     'url' => 'http://checkip.amazonaws.com/',
-                    'method' => lambda { |x| x }
+                    'method' => lambda { |x| x },
+                    'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ } 
                  }
     ].shuffle
 
@@ -115,13 +118,14 @@ def get_my_ip
     ip_good = false
     my_ip = nil
     ip_providers.each do |provider|
+        puts "Polling #{provider['url']}"
         # do a request
         begin
             curl = Curl::Easy.new(provider['url'])
             data = curl.http(:get)
-            my_ip = provider['method'].call(curl.body_str)
-         
-            if  my_ip =~ /([\d]{1,3}\.){3}[\d]{1,3}/
+            response = curl.body_str
+            if provider['validate'].call(response) 
+               my_ip = provider['method'].call(response)
                ip_good = true
                break
             else
