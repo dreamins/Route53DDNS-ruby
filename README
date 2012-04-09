@@ -18,3 +18,5 @@ crontab -e
 */5 * * * * /usr/bin/env /path_to/route53_ddns.rb --secrets-file /path_to/.your_aws_secrets --hosted-zone [your hosted zone] --random-sleep > /path_to_log/route53.log 2>&1
 
 More here: http://stepanyakovlev.net/2012/03/26/route53-dynamic-dns/
+
+Please note, if you poll untrusted sources for IP they might lead your website to a wrong destination :)
