@@ -97,11 +97,7 @@ end
 # among with a function, that will help to extract it
 # Amazon AWS one shall be enough though
 def get_my_ip
-    ip_providers = [ { 
-                    'url' => 'http://whatismyip.org/',
-                    'method'  =>  lambda { |x| x },
-                    'validate' => lambda { |x| x =~ /^([\d]{1,3}\.){3}[\d]{1,3}$/ }
-                 },
+    ip_providers = [
                  {
                     'url' => 'http://strewth.org/ip.php',
                     'method' => lambda { |x| JSON.parse(x)['ipaddress']; },
