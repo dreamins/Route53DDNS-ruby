@@ -126,8 +126,12 @@ def get_my_ip
             response = curl.body_str
             if provider['validate'].call(response) 
                my_ip = provider['method'].call(response)
-               ip_good = true
-               break
+               if my_ip =~ /^([\d]{1,3}\.){3}[\d]{1,3}$/
+                    ip_good = true
+                    break
+               else
+                   warn "Result is not a dotted quad IP"
+               end
             else
                 warn "Bad response from IP lookup server. Retrying"
             end
