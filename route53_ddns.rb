@@ -16,6 +16,7 @@
 # ./route53_ddns.rb --secrets-file /path/.r53_secrets --hosted-zone [your hosted zone id] --random-sleep
 
 require 'rubygems'
+require 'bundler/setup'
 # required to do requests to external servers to figure out external IP address
 # http://curb.rubyforge.org/
 # you might need to install this with gem install curb

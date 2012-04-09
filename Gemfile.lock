@@ -1,0 +1,20 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    builder (3.0.0)
+    curb (0.8.0)
+    hpricot (0.8.6)
+    json (1.6.6)
+    route53 (0.2.1)
+      builder
+      hpricot
+      ruby-hmac
+    ruby-hmac (0.4.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  curb
+  json
+  route53 (~> 0.2.1)
