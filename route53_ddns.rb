@@ -40,6 +40,7 @@ def get_cli_options args
     options.secrets_file = ""
     options.hosted_zone = ""
     options.sleep = false
+    options.subdomain = ""
 
     opts = OptionParser.new do |opts|
         opts.banner = "Usage: #{$0} [options]"
@@ -50,6 +51,10 @@ def get_cli_options args
 
         opts.on("-z", "--hosted-zone [HZID]", "Route53 hosted zone id") do
             |val|  options.hosted_zone = val 
+        end
+
+        opts.on("-d", "--subdomain [SUBDOMAIN]", "A record subdomain.  If not specified, assumes a single A record in the zone") do
+            |val|  options.subdomain = val
         end
 
         opts.on("-b", "--[no-]random-sleep", "Random sleep of up to 1 minute enabled") do
@@ -146,7 +151,7 @@ end
 
 # assuming that target HostedZone contains only one A record
 # otherwise this script is not what you are looking for
-def get_A_record (r53, hzid)
+def get_A_record (r53, hzid, subdomain)
     zones = r53.get_zones
     # /hostedzone/[HZID]
     the_zone = zones.select { |zone| zone.host_url.split('/')[2] == hzid }
@@ -157,24 +162,44 @@ def get_A_record (r53, hzid)
     end
 
     records = the_zone[0].get_records('A')
-    if (records.size() != 1)
-        puts "It is assumed that only one A record exists in HZ to update"
-        exit 1
+
+    arecord = ""
+    if (subdomain.length > 0)
+        #try to find the A record with the subdomain specified
+        subrecs = records.select { |record| record.name.start_with? subdomain }
+
+        if (subrecs.size() == 0)
+            puts "A record with name "+subdomain+" was not found"
+            exit 1
+        elsif (subrecs.size() > 1)
+            puts "It is assumed that only one A record with name "+subdomain+" exists to update"
+            exit 1
+        else
+            arecord = subrecs[0]
+    	end
+    else
+        # Assume that there is only one A record in the zone to update
+        if (records.size() != 1)
+            puts "It is assumed that only one A record exists in HZ to update"
+            exit 1
+        end
+
+        arecord = records[0]
     end
 
-    records[0]
+    arecord
 end
 
 # Route53 is authoritative source of domain name
 # anythig else is just a cache, that might become stale
 # or prone to invalidation issues. One request per 5 minutes shall
 # not be a problem
-def get_previous_ip(r53, hzid)
-    get_A_record(r53,hzid).values[0]
+def get_previous_ip(r53, hzid, subdomain)
+    get_A_record(r53,hzid,subdomain).values[0]
 end
 
-def update_ip (r53, hzid, ip)
-    get_A_record(r53, hzid).update(nil, nil, nil, [ip])
+def update_ip (r53, hzid, subdomain, ip)
+    get_A_record(r53, hzid, subdomain).update(nil, nil, nil, [ip])
 end
 
 options = get_cli_options(ARGV)
@@ -200,7 +225,7 @@ secrets = JSON.parse(File.read(options.secrets_file))
 
 # send update batch assuming only one zone for account for now
 r53 = Route53::Connection.new(secrets["access_key"], secrets["secret_key"], $API_VERSION, $ENDPOINT)
-previous_ip = get_previous_ip(r53, options.hosted_zone)
+previous_ip = get_previous_ip(r53, options.hosted_zone, options.subdomain)
 
 puts "IP was #{previous_ip}"
 
@@ -211,6 +236,6 @@ end
 
 
 puts "Updating ip with Route53"
-update_ip(r53, options.hosted_zone, my_ip)
+update_ip(r53, options.hosted_zone, options.subdomain, my_ip)
 puts "Done"
 
