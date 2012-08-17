@@ -166,13 +166,16 @@ def get_A_record (r53, hzid, subdomain)
     arecord = ""
     if (subdomain.length > 0)
         #try to find the A record with the subdomain specified
-    	records.each do |record|
-      	    arecord = record if (record.name.start_with? subdomain)
-    	end
+        subrecs = records.select { |record| record.name.start_with? subdomain }
 
-    	if (!arecord)
+        if (subrecs.size() == 0)
             puts "A record with name "+subdomain+" was not found"
             exit 1
+        elsif (subrecs.size() > 1)
+            puts "It is assumed that only one A record with name "+subdomain+" exists to update"
+            exit 1
+        else
+            arecord = subrecs[0]
     	end
     else
         # Assume that there is only one A record in the zone to update
