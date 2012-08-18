@@ -149,8 +149,6 @@ def get_my_ip
     my_ip.strip
 end
 
-# assuming that target HostedZone contains only one A record
-# otherwise this script is not what you are looking for
 def get_A_record (r53, hzid, subdomain)
     zones = r53.get_zones
     # /hostedzone/[HZID]
@@ -169,10 +167,10 @@ def get_A_record (r53, hzid, subdomain)
         subrecs = records.select { |record| record.name.start_with? subdomain }
 
         if (subrecs.size() == 0)
-            puts "A record with name "+subdomain+" was not found"
+            puts "A record with name #{subdomain} was not found"
             exit 1
         elsif (subrecs.size() > 1)
-            puts "It is assumed that only one A record with name "+subdomain+" exists to update"
+            puts "It is assumed that only one A record with name #{subdomain} exists to update"
             exit 1
         else
             arecord = subrecs[0]
