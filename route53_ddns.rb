@@ -34,6 +34,7 @@ require 'route53'
 # Route53 endpoint 
 $ENDPOINT = 'https://route53.amazonaws.com/'
 $API_VERSION = '2012-02-29'
+$CONNECT_TIMEOUT_SEC = 3
 
 def get_cli_options args
     options = OpenStruct.new
@@ -124,7 +125,8 @@ def get_my_ip
         # do a request
         begin
             curl = Curl::Easy.new(provider['url'])
-            data = curl.http(:get)
+            curl.timeout = $CONNECT_TIMEOUT_SEC
+            data = curl.http(:GET)
             response = curl.body_str
             if provider['validate'].call(response) 
                my_ip = provider['method'].call(response)
