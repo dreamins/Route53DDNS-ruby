@@ -106,7 +106,7 @@ end
 def get_my_ip
     ip_providers = [
                  {
-                    'url' => 'http://strewth.org/ip.php',
+                    'url' => 'http://www.strewth.org/ip.php',
                     'method' => lambda { |x| JSON.parse(x)['ipaddress']; },
                     'validate' => lambda { |x| JSON.parse(x).has_key?('ipaddress') }
                  },
