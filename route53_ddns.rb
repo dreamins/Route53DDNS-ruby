@@ -106,20 +106,10 @@ end
 def get_my_ip
     ip_providers = [
                  {
-                    'url' => 'http://www.strewth.org/ip.php',
-                    'method' => lambda { |x| JSON.parse(x)['ipaddress']; },
-                    'validate' => lambda { |x| JSON.parse(x).has_key?('ipaddress') }
-                 },
-                 {
                     'url' => 'http://checkip.amazonaws.com/',
                     'method' => lambda { |x| x },
                     'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ } 
                  },
-		 {
-		    'url' => 'http://icanhazip.com/',
-		    'method' => lambda { |x| x },
-                    'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ }
-		 }
     ].shuffle
 
     # choose a random ip provider, then iterate ahead from it
