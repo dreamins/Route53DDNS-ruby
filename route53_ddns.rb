@@ -105,11 +105,16 @@ end
 # Amazon AWS one shall be enough though
 def get_my_ip
     ip_providers = [
-                 {
-                    'url' => 'http://checkip.amazonaws.com/',
-                    'method' => lambda { |x| x },
-                    'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ } 
-                 },
+        {
+            'url' => 'http://checkip.amazonaws.com/',
+            'method' => lambda { |x| x },
+            'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ } 
+        },
+        {
+            'url' => 'http://icanhazip.com/',
+            'method' => lambda { |x| x },
+            'validate' => lambda { |x| x =~  /^([\d]{1,3}\.){3}[\d]{1,3}$/ }
+        }
     ].shuffle
 
     # choose a random ip provider, then iterate ahead from it
