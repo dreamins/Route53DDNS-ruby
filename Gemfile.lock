@@ -1,10 +1,10 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    builder (3.2.2)
-    curb (0.8.8)
+    builder (3.2.4)
+    curb (0.9.10)
     hpricot (0.8.6)
-    json (1.8.3)
+    json (1.8.6)
     route53 (0.2.2)
       builder
       hpricot
@@ -15,6 +15,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  curb
-  json
+  curb (~> 0.9.7)
+  json (~> 1.8.5)
   route53 (~> 0.2.1)
+
+BUNDLED WITH
+   2.1.4
