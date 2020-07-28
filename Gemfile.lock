@@ -4,7 +4,7 @@ GEM
     builder (3.2.4)
     curb (0.9.10)
     hpricot (0.8.6)
-    json (1.8.6)
+    json (2.3.0)
     route53 (0.2.2)
       builder
       hpricot
@@ -16,7 +16,7 @@ PLATFORMS
 
 DEPENDENCIES
   curb (~> 0.9.7)
-  json (~> 1.8.5)
+  json (~> 2.3.0)
   route53 (~> 0.2.1)
 
 BUNDLED WITH
